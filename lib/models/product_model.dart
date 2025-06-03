@@ -4,8 +4,13 @@ enum ProductCategory {
   pan,
   galleta,
   dulces,
+  helados,
+  kekes, // Nueva categoría
+  minimaria, // Nueva categoría
+  porciones, // Nueva categoría
+  tortas, // Nueva categoría
+  decoracion, // Nueva categoría
 }
-
 
 class Product {
   final String id;
@@ -44,9 +49,20 @@ class Product {
         return ProductCategory.galleta;
       case 'dulces':
         return ProductCategory.dulces;
-
+      case 'helados':
+        return ProductCategory.helados;
+      case 'kekes': // Nueva categoría
+        return ProductCategory.kekes;
+      case 'minimaria': // Nueva categoría
+        return ProductCategory.minimaria;
+      case 'porciones': // Nueva categoría
+        return ProductCategory.porciones;
+      case 'tortas': // Nueva categoría
+        return ProductCategory.tortas;
+      case 'decoracion': // Nueva categoría
+        return ProductCategory.decoracion;
       default:
-        return ProductCategory.pan;
+        return ProductCategory.pan; // Valor por defecto
     }
   }
 
@@ -58,6 +74,18 @@ class Product {
         return 'galleta';
       case ProductCategory.dulces:
         return 'dulces';
+      case ProductCategory.helados:
+        return 'helados';
+      case ProductCategory.kekes: // Nueva categoría
+        return 'kekes';
+      case ProductCategory.minimaria: // Nueva categoría
+        return 'minimaria';
+      case ProductCategory.porciones: // Nueva categoría
+        return 'porciones';
+      case ProductCategory.tortas: // Nueva categoría
+        return 'tortas';
+      case ProductCategory.decoracion: // Nueva categoría
+        return 'decoracion';
     }
   }
 }

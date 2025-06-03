@@ -177,6 +177,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
         return 'galleta';
       case ProductCategory.dulces:
         return 'dulces';
+      case ProductCategory.helados:
+        return 'helados';
+      case ProductCategory.kekes: // Nueva categoría
+        return 'kekes';
+      case ProductCategory.minimaria: // Nueva categoría
+        return 'minimaria';
+      case ProductCategory.porciones: // Nueva categoría
+        return 'porciones';
+      case ProductCategory.tortas: // Nueva categoría
+        return 'tortas';
+      case ProductCategory.decoracion: // Nueva categoría
+        return 'decoracion';
+      
  
     }
   } 

@@ -201,13 +201,25 @@ class ProductCard extends StatelessWidget {
 
   Color _getCategoryColor(ProductCategory category) {
     switch (category) {
-      case ProductCategory.pan:
-        return Colors.blue;
-      case ProductCategory.galleta:
-        return Colors.green;
-      case ProductCategory.dulces:
-        return Colors.orange;
-     
+       case ProductCategory.pan:
+      return Colors.blue;
+    case ProductCategory.galleta:
+      return Colors.green;
+    case ProductCategory.dulces:
+      return Colors.orange;
+    case ProductCategory.helados:
+      return Colors.pink;
+    case ProductCategory.kekes:
+      return Colors.purple; // Nueva categoría
+    case ProductCategory.minimaria:
+      return Colors.yellow; // Nueva categoría
+    case ProductCategory.porciones:
+      return Colors.teal; // Nueva categoría
+    case ProductCategory.tortas:
+      return Colors.red; // Nueva categoría
+    case ProductCategory.decoracion:
+      return Colors.brown; // Nueva categoría
+   
     }
   }
 }
