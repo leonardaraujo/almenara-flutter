@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "202403588023",
+    "firebase_url": "https://panaderia-d6279-default-rtdb.firebaseio.com",
+    "project_id": "panaderia-d6279",
+    "storage_bucket": "panaderia-d6279.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202403588023:android:a216b7e32716422b0c6a32",
+        "android_client_info": {
+          "package_name": "com.example.panaderia_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYn6Hi1MKdYli85FXtnnJa6UpEnMOF3q0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:202403588023:android:ec5b72eb31b78cad0c6a32",
+        "android_client_info": {
+          "package_name": "com.example.pancito"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBYn6Hi1MKdYli85FXtnnJa6UpEnMOF3q0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
