@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product_model.dart';
+import '../repositories/product_repository.dart';
 
 class AddProductScreen extends StatefulWidget {
   const AddProductScreen({super.key});
@@ -11,14 +12,42 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _firestore = FirebaseFirestore.instance;
-
-  // Controladores para los campos del formulario
+  final ProductRepository _productRepository = ProductRepository();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
   final _imageUrlController = TextEditingController();
-  ProductCategory _selectedCategory = ProductCategory.pan;
+  String? _selectedCategory;
+  List<String> _categories = [];
+  bool _isLoadingCategories = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final categories = await _productRepository.getUniqueCategories();
+      setState(() {
+        _categories = categories;
+        _isLoadingCategories = false;
+        if (_categories.isNotEmpty) {
+          _selectedCategory = _categories.first;
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _isLoadingCategories = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al cargar categorías: $e')),
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -30,21 +59,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate() && _selectedCategory != null) {
       try {
-        await _firestore.collection('products').add({
-          'name': _nameController.text,
-          'description': _descriptionController.text,
-          'price': double.parse(_priceController.text),
-          'category': _selectedCategory.toString().split('.').last,
-          'imageUrl': _imageUrlController.text,
-        });
+        final newProduct = Product(
+          id: '', // Se asignará al crear el documento
+          name: _nameController.text,
+          description: _descriptionController.text,
+          price: double.parse(_priceController.text),
+          category: _selectedCategory!,
+          imageUrl: _imageUrlController.text,
+        );
+
+        await _productRepository.addProduct(newProduct);
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Producto agregado exitosamente')),
           );
-          Navigator.pop(context);
+          Navigator.pop(context, true); // Retorna true para indicar éxito
         }
       } catch (e) {
         if (mounted) {
@@ -116,26 +148,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<ProductCategory>(
-                  value: _selectedCategory,
-                  decoration: const InputDecoration(
-                    labelText: 'Categoría',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: ProductCategory.values.map((category) {
-                    return DropdownMenuItem<ProductCategory>(
-                      value: category,
-                      child: Text(_getCategoryName(category)),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        _selectedCategory = value;
-                      });
-                    }
-                  },
-                ),
+                _buildCategoryDropdown(),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _imageUrlController,
@@ -169,17 +182,38 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  String _getCategoryName(ProductCategory category) {
-    switch (category) {
-      case ProductCategory.pan:
-        return 'pan';
-      case ProductCategory.galleta:
-        return 'galleta';
-      case ProductCategory.dulces:
-        return 'dulces';
- 
+  Widget _buildCategoryDropdown() {
+    if (_isLoadingCategories) {
+      return const CircularProgressIndicator();
     }
-  } 
+
+    if (_categories.isEmpty) {
+      return const Text('No hay categorías disponibles');
+    }
+
+    return DropdownButtonFormField<String>(
+      value: _selectedCategory,
+      decoration: const InputDecoration(
+        labelText: 'Categoría',
+        border: OutlineInputBorder(),
+      ),
+      items: _categories.map((category) {
+        return DropdownMenuItem<String>(
+          value: category,
+          child: Text(category),
+        );
+      }).toList(),
+      onChanged: (value) {
+        setState(() {
+          _selectedCategory = value;
+        });
+      },
+      validator: (value) {
+        if (value == null) {
+          return 'Selecciona una categoría';
+        }
+        return null;
+      },
+    );
+  }
 }
-
-
