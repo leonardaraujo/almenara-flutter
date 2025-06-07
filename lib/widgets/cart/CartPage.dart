@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import "../../services/cartService.dart";
+import 'CheckoutPage.dart';
 
 class CartPage extends StatelessWidget {
   const CartPage({super.key});
@@ -326,22 +327,9 @@ class CartPage extends StatelessWidget {
   }
 
   void _showPaymentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Pago'),
-          content: const Text('Funcionalidad de pago no implementada aún.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Aceptar'),
-            ),
-          ],
-        );
-      },
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const CheckoutPage()),
     );
   }
 }
