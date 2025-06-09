@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Ingresa tu correo';
-    final regex = RegExp(r'^\S+@\S+\.\S+\$');
+    final regex = RegExp(r'^\S+@\S+\.\S+$');
     if (!regex.hasMatch(value)) return 'Correo inválido';
     return null;
   }
