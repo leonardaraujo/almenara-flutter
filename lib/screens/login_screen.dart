@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Ingresa tu correo';
-    final regex = RegExp(r'^\S+@\S+\.\S+\$');
+    final regex = RegExp(r'^\S+@\S+\.\S+$');
     if (!regex.hasMatch(value)) return 'Correo inválido';
     return null;
   }
@@ -75,14 +75,33 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Iniciar Sesión')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      appBar: AppBar(
+        title: const Text('Iniciar Sesión'),
+        backgroundColor: Colors.pink,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFFFF3E0), Color(0xFFFFCDD2)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Correo'),
@@ -115,7 +134,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: const Text('Crear cuenta'),
               ),
-            ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),

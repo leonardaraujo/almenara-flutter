@@ -32,6 +32,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _emailController.text.trim(),
         _passwordController.text,
       );
+      await _authService.signInWithEmail(
+        _emailController.text.trim(),
+        _passwordController.text,
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario registrado correctamente')),
+        );
+      }
     } on Exception catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context)
@@ -42,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  Future<void> _loginWithGoogle() async {
+  Future<void> _registerWithGoogle() async {
     setState(() => _loading = true);
     try {
       await _authService.signInWithGoogle();
@@ -58,7 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Ingresa tu correo';
-    final regex = RegExp(r'^\S+@\S+\.\S+\$');
+    final regex = RegExp(r'^\S+@\S+\.\S+$');
     if (!regex.hasMatch(value)) return 'Correo inválido';
     return null;
   }
@@ -75,14 +84,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrarse')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
+      appBar: AppBar(
+        title: const Text('Registrarse'),
+        backgroundColor: Colors.pink,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFFFF3E0), Color(0xFFFFCDD2)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Correo'),
@@ -104,7 +132,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               const SizedBox(height: 10),
               ElevatedButton(
-                onPressed: _loading ? null : _loginWithGoogle,
+                onPressed: _loading ? null : _registerWithGoogle,
                 child: const Text('Registrarse con Google'),
               ),
               const SizedBox(height: 10),
@@ -115,7 +143,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 child: const Text('Ya tengo cuenta'),
               ),
-            ],
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ),
