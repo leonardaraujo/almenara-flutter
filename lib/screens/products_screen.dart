@@ -3,6 +3,7 @@ import '../repositories/product_repository.dart';
 import '../models/product_model.dart';
 import 'add_product_screen.dart';
 import '../services/auth_service.dart';
+import 'login_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -54,6 +55,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await _authService.signOut();
+              if (mounted) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
+              }
             },
           ),
         ],
