@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../repositories/product_repository.dart';
 import '../models/product_model.dart';
-import 'add_product_screen.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -43,12 +42,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos de Pastelería'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _navigateToAddProduct(context),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -82,7 +75,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
               },
             ),
           ),
-          
+
           // Filtro por categoría
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -128,9 +121,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 8.0),
-          
+
           // Lista de productos filtrados
           Expanded(
             child: StreamBuilder<List<Product>>(
@@ -145,11 +138,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 }
 
                 final products = snapshot.data ?? [];
-                
+
                 // Filtrar productos según búsqueda y categoría seleccionada
                 final filteredProducts = products.where((product) {
                   final matchesSearch = product.name.toLowerCase().contains(_searchQuery);
-                  final matchesCategory = _selectedCategory == null || 
+                  final matchesCategory = _selectedCategory == null ||
                       (product.category?.toLowerCase() == _selectedCategory?.toLowerCase());
                   return matchesSearch && matchesCategory;
                 }).toList();
@@ -189,22 +182,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _navigateToAddProduct(context),
-        tooltip: 'Agregar producto',
-        child: const Icon(Icons.add),
-      ),
     );
-  }
-
-  void _navigateToAddProduct(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AddProductScreen()),
-    ).then((_) {
-      // Recargar categorías después de agregar un producto
-      _loadCategories();
-    });
   }
 }
 
@@ -228,7 +206,7 @@ class ProductCard extends StatelessWidget {
           ClipRRect(
             borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
             child: AspectRatio(
-              aspectRatio: 16/9,
+              aspectRatio: 16 / 9,
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,
