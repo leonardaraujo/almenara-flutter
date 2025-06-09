@@ -164,8 +164,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 // Filtrar productos según búsqueda y categoría seleccionada
                 final filteredProducts = products.where((product) {
                   final matchesSearch = product.name.toLowerCase().contains(_searchQuery);
-                  final matchesCategory = _selectedCategory == null || 
-                      (product.category?.toLowerCase() == _selectedCategory?.toLowerCase());
+                  final matchesCategory = _selectedCategory == null ||
+                      product.category.toLowerCase() ==
+                          _selectedCategory?.toLowerCase();
                   return matchesSearch && matchesCategory;
                 }).toList();
 
@@ -273,14 +274,15 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Categoría
-                if (product.category != null && product.category!.isNotEmpty)
+                if (product.category.isNotEmpty)
                   Chip(
                     label: Text(
-                      product.category!,
+                      product.category,
                       style: const TextStyle(color: Colors.white),
                     ),
-                    backgroundColor: _getCategoryColor(product.category!),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    backgroundColor: _getCategoryColor(product.category),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   ),
                 const SizedBox(height: 12),
                 // Nombre
