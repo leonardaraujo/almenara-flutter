@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../repositories/product_repository.dart';
 import '../models/product_model.dart';
 import 'add_product_screen.dart';
+import '../services/auth_service.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -12,6 +13,7 @@ class ProductsScreen extends StatefulWidget {
 
 class _ProductsScreenState extends State<ProductsScreen> {
   final ProductRepository _productRepository = ProductRepository();
+  final AuthService _authService = AuthService();
   late Stream<List<Product>> _productsStream;
   String _searchQuery = '';
   String? _selectedCategory;
@@ -47,6 +49,12 @@ class _ProductsScreenState extends State<ProductsScreen> {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => _navigateToAddProduct(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await _authService.signOut();
+            },
           ),
         ],
       ),
