@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/product_model.dart';
 import '../repositories/product_repository.dart';
 
@@ -91,9 +90,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Agregar Nuevo Producto'),
-      ),
+      appBar: AppBar(title: const Text('Agregar Nuevo Producto')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -197,12 +194,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
         labelText: 'Categoría',
         border: OutlineInputBorder(),
       ),
-      items: _categories.map((category) {
-        return DropdownMenuItem<String>(
-          value: category,
-          child: Text(category),
-        );
-      }).toList(),
+      items:
+          _categories.map((category) {
+            return DropdownMenuItem<String>(
+              value: category,
+              child: Text(category),
+            );
+          }).toList(),
       onChanged: (value) {
         setState(() {
           _selectedCategory = value;

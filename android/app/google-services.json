@@ -13,7 +13,20 @@
           "package_name": "com.example.panaderia_1"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "202403588023-18fdj8b2ievdhmch85cv7vthf1gv1f4n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.panaderia_1",
+            "certificate_hash": "71f8d97175268d75366c2045b19924cbc6427c63"
+          }
+        },
+        {
+          "client_id": "202403588023-7re2sfrcsj6rvlb87pmip9jitdiq11in.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBYn6Hi1MKdYli85FXtnnJa6UpEnMOF3q0"
@@ -21,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "202403588023-7re2sfrcsj6rvlb87pmip9jitdiq11in.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "202403588023-3gpnf25e8jajknt34artqf2ag6on94mh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.panaderia1"
+              }
+            }
+          ]
         }
       }
     },
@@ -32,7 +57,20 @@
           "package_name": "com.example.pancito"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "202403588023-afhiblrqh4r3ke39muvk33mb2t76341p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.pancito",
+            "certificate_hash": "71f8d97175268d75366c2045b19924cbc6427c63"
+          }
+        },
+        {
+          "client_id": "202403588023-7re2sfrcsj6rvlb87pmip9jitdiq11in.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBYn6Hi1MKdYli85FXtnnJa6UpEnMOF3q0"
@@ -40,7 +78,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "202403588023-7re2sfrcsj6rvlb87pmip9jitdiq11in.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "202403588023-3gpnf25e8jajknt34artqf2ag6on94mh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.panaderia1"
+              }
+            }
+          ]
         }
       }
     }
