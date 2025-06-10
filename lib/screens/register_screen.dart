@@ -12,15 +12,21 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _loading = false;
 
   @override
   void dispose() {
+    _nameController.dispose();
+    _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -38,7 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Usuario registrado correctamente')),
+          const SnackBar(content: Text('Se ha registrado correctamente')),
         );
       }
     } on Exception catch (e) {
@@ -81,6 +87,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return null;
   }
 
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) return 'Confirma tu contraseña';
+    if (value != _passwordController.text) {
+      return 'Las contraseñas no coinciden';
+    }
+    return null;
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.isEmpty) return 'Ingresa tu nombre completo';
+    return null;
+  }
+
+  String? _validatePhone(String? value) {
+    if (value == null || value.isEmpty) return 'Ingresa tu número telefónico';
+    if (!RegExp(r'^\\d{7,15}\$').hasMatch(value)) {
+      return 'Número telefónico inválido';
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,6 +139,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
               TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Nombre completo'),
+                validator: _validateName,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _phoneController,
+                decoration: const InputDecoration(labelText: 'Número telefónico'),
+                keyboardType: TextInputType.phone,
+                validator: _validatePhone,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'Correo'),
                 validator: _validateEmail,
@@ -122,6 +162,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 decoration: const InputDecoration(labelText: 'Contraseña'),
                 obscureText: true,
                 validator: _validatePassword,
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _confirmPasswordController,
+                decoration: const InputDecoration(labelText: 'Confirmar contraseña'),
+                obscureText: true,
+                validator: _validateConfirmPassword,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
