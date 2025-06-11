@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../repositories/product_repository.dart';
 import '../models/product_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -42,6 +43,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos de Pastelería'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
