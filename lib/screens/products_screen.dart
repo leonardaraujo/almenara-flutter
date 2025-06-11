@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../repositories/product_repository.dart';
 import '../models/product_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
@@ -42,6 +43,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos de Pastelería'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              if (mounted) {
+                Navigator.pushReplacementNamed(context, '/login');
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -53,17 +65,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
               decoration: InputDecoration(
                 labelText: 'Buscar productos',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
+                suffixIcon:
+                    _searchQuery.isNotEmpty
+                        ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                        )
+                        : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -140,12 +153,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 final products = snapshot.data ?? [];
 
                 // Filtrar productos según búsqueda y categoría seleccionada
-                final filteredProducts = products.where((product) {
-                  final matchesSearch = product.name.toLowerCase().contains(_searchQuery);
-                  final matchesCategory = _selectedCategory == null ||
-                      (product.category?.toLowerCase() == _selectedCategory?.toLowerCase());
-                  return matchesSearch && matchesCategory;
-                }).toList();
+                final filteredProducts =
+                    products.where((product) {
+                      final matchesSearch = product.name.toLowerCase().contains(
+                        _searchQuery,
+                      );
+                      final matchesCategory =
+                          _selectedCategory == null ||
+                          (product.category?.toLowerCase() ==
+                              _selectedCategory?.toLowerCase());
+                      return matchesSearch && matchesCategory;
+                    }).toList();
 
                 if (filteredProducts.isEmpty) {
                   return Center(
@@ -154,7 +172,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       children: [
                         const Text('No se encontraron productos'),
                         const SizedBox(height: 20),
-                        if (_searchQuery.isNotEmpty || _selectedCategory != null)
+                        if (_searchQuery.isNotEmpty ||
+                            _selectedCategory != null)
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
@@ -196,9 +215,7 @@ class ProductCard extends StatelessWidget {
     return Card(
       elevation: 4,
       margin: const EdgeInsets.only(bottom: 16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -210,20 +227,26 @@ class ProductCard extends StatelessWidget {
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Colors.grey[200],
-                  child: const Center(
-                    child: Icon(Icons.error_outline, color: Colors.red, size: 40),
-                  ),
-                ),
+                errorBuilder:
+                    (context, error, stackTrace) => Container(
+                      color: Colors.grey[200],
+                      child: const Center(
+                        child: Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 40,
+                        ),
+                      ),
+                    ),
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Center(
                     child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
+                      value:
+                          loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
                     ),
                   );
                 },
@@ -236,14 +259,17 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Categoría
-                if (product.category != null && product.category!.isNotEmpty)
+                if (product.category.isNotEmpty)
                   Chip(
                     label: Text(
-                      product.category!,
+                      product.category,
                       style: const TextStyle(color: Colors.white),
                     ),
-                    backgroundColor: _getCategoryColor(product.category!),
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    backgroundColor: _getCategoryColor(product.category),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                   ),
                 const SizedBox(height: 12),
                 // Nombre
@@ -258,10 +284,7 @@ class ProductCard extends StatelessWidget {
                 // Descripción
                 Text(
                   product.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 12),
                 // Precio
@@ -280,7 +303,9 @@ class ProductCard extends StatelessWidget {
                       icon: const Icon(Icons.info_outline),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Detalles de ${product.name}')),
+                          SnackBar(
+                            content: Text('Detalles de ${product.name}'),
+                          ),
                         );
                       },
                     ),
@@ -297,11 +322,6 @@ class ProductCard extends StatelessWidget {
   Color _getCategoryColor(String category) {
     // Usamos el hash del string de categoría para generar un color consistente
     final hash = category.hashCode;
-    return HSLColor.fromAHSL(
-      1.0,
-      (hash % 360).toDouble(),
-      0.7,
-      0.6,
-    ).toColor();
+    return HSLColor.fromAHSL(1.0, (hash % 360).toDouble(), 0.7, 0.6).toColor();
   }
 }
