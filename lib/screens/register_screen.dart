@@ -20,7 +20,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String? _validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Ingrese un correo';
-    final emailRegex = RegExp(r'^.+@.+\..+\$');
+    final emailRegex = RegExp(r'^.+@.+\..+$');
     if (!emailRegex.hasMatch(value)) return 'Correo inválido';
     return null;
   }
@@ -102,7 +102,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.trim().isEmpty) {
                       return 'Ingrese su número';
                     }
-                    if (!RegExp(r'^\d{9,15}\$').hasMatch(value.trim())) {
+                    if (!RegExp(r'^\d{9,15}$').hasMatch(value.trim())) {
                       return 'Número inválido';
                     }
                     return null;
