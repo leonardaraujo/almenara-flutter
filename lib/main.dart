@@ -4,13 +4,23 @@ import 'firebase_options.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/products_screen.dart';
+import 'screens/cart_screen.dart';
+import 'screens/product_detail_screen.dart';
+import 'package:provider/provider.dart';
+import 'providers/cart_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => CartProvider(),)
+    ],
+    child:const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +40,10 @@ class MyApp extends StatelessWidget {
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/products': (_) => const ProductsScreen(),
+        '/cart': (_) => const CartScreen(),
+        '/product_detail': (_) => const ProductDetailScreen(),
+        '/cart': (_) => const CartScreen(),
+
       },
     );
   }
