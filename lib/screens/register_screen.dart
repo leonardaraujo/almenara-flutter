@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../repositories/user_repository.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -39,12 +40,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       _error = null;
     });
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
       await FirebaseAuth.instance.currentUser?.updateDisplayName(
         _nameController.text.trim(),
+      );
+      final userRepo = UserRepository();
+      await userRepo.createUser(
+        uid: credential.user!.uid,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        phone: _phoneController.text.trim(),
       );
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/products');
