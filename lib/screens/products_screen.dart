@@ -59,20 +59,26 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 top: 4,
                 child: Consumer<CartProvider>(
                   builder: (context, cart, _) {
-                    final count = cart.items.values.fold<int>(0, (sum, item) => sum + item.quantity);
+                    final count = cart.items.values.fold<int>(
+                      0,
+                      (sum, item) => sum + item.quantity,
+                    );
                     return count == 0
                         ? const SizedBox.shrink()
                         : Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(20),
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '$count',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
                             ),
-                            child: Text(
-                              '$count',
-                              style: const TextStyle(color: Colors.white, fontSize: 12),
-                            ),
-                          );
+                          ),
+                        );
                   },
                 ),
               ),
@@ -86,7 +92,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(color: Colors.pink),
-              child: Text('Menú', style: TextStyle(color: Colors.white, fontSize: 24)),
+              child: Text(
+                'Menú',
+                style: TextStyle(color: Colors.white, fontSize: 24),
+              ),
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -110,17 +119,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
               decoration: InputDecoration(
                 labelText: 'Buscar productos',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                      )
-                    : null,
+                suffixIcon:
+                    _searchQuery.isNotEmpty
+                        ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() {
+                              _searchQuery = '';
+                            });
+                          },
+                        )
+                        : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                 ),
@@ -155,7 +165,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                           value: category,
                           child: Text(category),
                         );
-                      }).toList(),
+                      }),
                     ],
                     onChanged: (value) {
                       setState(() {
@@ -188,12 +198,17 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final products = snapshot.data ?? [];
-                final filteredProducts = products.where((product) {
-                  final matchesSearch = product.name.toLowerCase().contains(_searchQuery);
-                  final matchesCategory = _selectedCategory == null ||
-                      (product.category?.toLowerCase() == _selectedCategory?.toLowerCase());
-                  return matchesSearch && matchesCategory;
-                }).toList();
+                final filteredProducts =
+                    products.where((product) {
+                      final matchesSearch = product.name.toLowerCase().contains(
+                        _searchQuery,
+                      );
+                      final matchesCategory =
+                          _selectedCategory == null ||
+                          (product.category.toLowerCase() ==
+                              _selectedCategory?.toLowerCase());
+                      return matchesSearch && matchesCategory;
+                    }).toList();
                 if (filteredProducts.isEmpty) {
                   return Center(
                     child: Column(
@@ -201,7 +216,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       children: [
                         const Text('No se encontraron productos'),
                         const SizedBox(height: 20),
-                        if (_searchQuery.isNotEmpty || _selectedCategory != null)
+                        if (_searchQuery.isNotEmpty ||
+                            _selectedCategory != null)
                           ElevatedButton(
                             onPressed: () {
                               setState(() {
@@ -240,11 +256,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(
-          context,
-          '/product_detail',
-          arguments: product,
-        );
+        Navigator.pushNamed(context, '/product_detail', arguments: product);
       },
       child: Card(
         elevation: 4,
@@ -254,25 +266,34 @@ class ProductCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(12),
+              ),
               child: AspectRatio(
                 aspectRatio: 16 / 9,
                 child: Image.network(
                   product.imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey[200],
-                    child: const Center(
-                      child: Icon(Icons.error_outline, color: Colors.red, size: 40),
-                    ),
-                  ),
+                  errorBuilder:
+                      (context, error, stackTrace) => Container(
+                        color: Colors.grey[200],
+                        child: const Center(
+                          child: Icon(
+                            Icons.error_outline,
+                            color: Colors.red,
+                            size: 40,
+                          ),
+                        ),
+                      ),
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) return child;
                     return Center(
                       child: CircularProgressIndicator(
-                        value: loadingProgress.expectedTotalBytes != null
-                            ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                            : null,
+                        value:
+                            loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
                       ),
                     );
                   },
@@ -291,12 +312,18 @@ class ProductCard extends StatelessWidget {
                         style: const TextStyle(color: Colors.white),
                       ),
                       backgroundColor: _getCategoryColor(product.category),
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                     ),
                   const SizedBox(height: 12),
                   Text(
                     product.name,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
