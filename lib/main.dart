@@ -8,19 +8,17 @@ import 'screens/cart_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
+import 'screens/splash_screen.dart'; // 👈 Añadido
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     MultiProvider(
-    providers: [
-      ChangeNotifierProvider(create: (_) => CartProvider(),)
-    ],
-    child:const MyApp(),
-  ));
+      providers: [ChangeNotifierProvider(create: (_) => CartProvider())],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -30,20 +28,22 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Tienda de Productos',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink).copyWith(
-          secondary: Colors.purpleAccent,
-        ),
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.pink,
+        ).copyWith(secondary: Colors.purpleAccent),
       ),
-      initialRoute: '/login',
+      initialRoute: '/',
       routes: {
+        '/':
+            (_) =>
+                const SplashScreen(), // 👈 Splash screen como entrada inicial
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/products': (_) => const ProductsScreen(),
         '/cart': (_) => const CartScreen(),
         '/product_detail': (_) => const ProductDetailScreen(),
-        '/cart': (_) => const CartScreen(),
-
       },
     );
   }
