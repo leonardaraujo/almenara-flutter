@@ -7,7 +7,6 @@ import '../providers/cart_provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   const ProductsScreen({super.key});
-
   @override
   State<ProductsScreen> createState() => _ProductsScreenState();
 }
@@ -44,6 +43,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFFF6F6F6), // Light Gray
+        foregroundColor: const Color(0xFF191919), // Black
         title: const Text('Productos de Pastelería'),
         actions: [
           Stack(
@@ -66,19 +67,19 @@ class _ProductsScreenState extends State<ProductsScreen> {
                     return count == 0
                         ? const SizedBox.shrink()
                         : Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            '$count',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF0000), // Red
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                          ),
-                        );
+                            child: Text(
+                              '$count',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
+                            ),
+                          );
                   },
                 ),
               ),
@@ -91,15 +92,18 @@ class _ProductsScreenState extends State<ProductsScreen> {
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.pink),
+              decoration: BoxDecoration(color: Color(0xFF191919)), // Black
               child: Text(
                 'Menú',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(color: Color(0xFFF6F6F6), fontSize: 24),
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Cerrar sesión'),
+              leading: const Icon(Icons.logout, color: Color(0xFF191919)),
+              title: const Text(
+                'Cerrar sesión',
+                style: TextStyle(color: Color(0xFF191919)),
+              ),
               onTap: () async {
                 await FirebaseAuth.instance.signOut();
                 if (context.mounted) {
@@ -118,23 +122,29 @@ class _ProductsScreenState extends State<ProductsScreen> {
               controller: _searchController,
               decoration: InputDecoration(
                 labelText: 'Buscar productos',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon:
-                    _searchQuery.isNotEmpty
-                        ? IconButton(
-                          icon: const Icon(Icons.clear),
-                          onPressed: () {
-                            _searchController.clear();
-                            setState(() {
-                              _searchQuery = '';
-                            });
-                          },
-                        )
-                        : null,
+                labelStyle: const TextStyle(color: Color(0xFF959595)), // Dark Gray
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF191919)),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Color(0xFF191919)),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(color: Color(0xFF191919)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                  borderSide: const BorderSide(color: Color(0xFF191919)),
                 ),
               ),
+              style: const TextStyle(color: Color(0xFF191919)),
               onChanged: (value) {
                 setState(() {
                   _searchQuery = value.toLowerCase();
@@ -150,8 +160,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   child: DropdownButtonFormField<String>(
                     decoration: InputDecoration(
                       labelText: 'Filtrar por categoría',
+                      labelStyle: const TextStyle(color: Color(0xFF959595)), // Dark Gray
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8.0),
+                        borderSide: const BorderSide(color: Color(0xFF191919)),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: const BorderSide(color: Color(0xFF191919)),
                       ),
                     ),
                     value: _selectedCategory,
@@ -176,7 +192,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 ),
                 if (_selectedCategory != null)
                   IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear, color: Color(0xFF191919)),
                     onPressed: () {
                       setState(() {
                         _selectedCategory = null;
@@ -226,6 +242,10 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 _searchController.clear();
                               });
                             },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFFF0000), // Red
+                              foregroundColor: Colors.white,
+                            ),
                             child: const Text('Limpiar filtros'),
                           ),
                       ],
@@ -262,6 +282,7 @@ class ProductCard extends StatelessWidget {
         elevation: 4,
         margin: const EdgeInsets.only(bottom: 16),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        color: const Color(0xFFF6F6F6), // Light Gray
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -274,26 +295,24 @@ class ProductCard extends StatelessWidget {
                 child: Image.network(
                   product.imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, stackTrace) => Container(
-                        color: Colors.grey[200],
-                        child: const Center(
-                          child: Icon(
-                            Icons.error_outline,
-                            color: Colors.red,
-                            size: 40,
-                          ),
-                        ),
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: const Color(0xFFE5E7EB), // Very Light Gray
+                    child: const Center(
+                      child: Icon(
+                        Icons.error_outline,
+                        color: Colors.red,
+                        size: 40,
                       ),
+                    ),
+                  ),
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) return child;
                     return Center(
                       child: CircularProgressIndicator(
-                        value:
-                            loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
                       ),
                     );
                   },
@@ -311,7 +330,7 @@ class ProductCard extends StatelessWidget {
                         product.category,
                         style: const TextStyle(color: Colors.white),
                       ),
-                      backgroundColor: _getCategoryColor(product.category),
+                      backgroundColor: const Color(0xFFFF0000), // Red
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8,
                         vertical: 4,
@@ -323,12 +342,16 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Color(0xFF191919), // Black
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     product.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF959595), // Dark Gray
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -336,7 +359,7 @@ class ProductCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.green,
+                      color: Color(0xFF191919), // Black
                     ),
                   ),
                 ],
@@ -346,10 +369,5 @@ class ProductCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Color _getCategoryColor(String category) {
-    final hash = category.hashCode;
-    return HSLColor.fromAHSL(1.0, (hash % 360).toDouble(), 0.7, 0.6).toColor();
   }
 }
