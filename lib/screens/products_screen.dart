@@ -107,6 +107,13 @@ class _ProductsScreenState extends State<ProductsScreen> {
                 }
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.person),
+              title: const Text('Perfil'),
+              onTap: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+            ),
           ],
         ),
       ),
