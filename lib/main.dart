@@ -8,8 +8,9 @@ import 'screens/cart_screen.dart';
 import 'screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
-import 'screens/splash_screen.dart'; // 👈 Añadido
+import 'screens/splash_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/purchase_history_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,15 +38,21 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/':
-            (_) =>
-                const SplashScreen(), // 👈 Splash screen como entrada inicial
+        '/': (_) => const SplashScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/products': (_) => const ProductsScreen(),
         '/cart': (_) => const CartScreen(),
         '/product_detail': (_) => const ProductDetailScreen(),
+        '/purchase_history': (_) => const PurchaseHistoryScreen(), // 👈 Nueva línea
+      },
+      onUnknownRoute: (settings) {
+        return MaterialPageRoute(
+          builder: (_) => const Scaffold(
+            body: Center(child: Text('Página no encontrada')),
+          ),
+        );
       },
     );
   }
