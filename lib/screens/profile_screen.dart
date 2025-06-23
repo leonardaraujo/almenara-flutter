@@ -1,10 +1,11 @@
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image/image.dart' as img;
+import 'dart:io'; // 👈 Importa la biblioteca para usar File
+import 'dart:convert'; // 👈 Importa la biblioteca para usar base64Encode
+import 'package:image_picker/image_picker.dart'; // 👈 Importa la biblioteca para usar ImagePicker
+import 'package:image/image.dart' as img; // 👈 Importa la biblioteca para manipular imágenes
+import '../widgets/app_drawer.dart'; // 👈 Importa tu AppDrawer
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -19,7 +20,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? nombre;
   String? telefono;
   String? email;
-
   final picker = ImagePicker();
 
   @override
@@ -31,11 +31,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> obtenerDatosPerfil() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
-
     try {
       final docRef = FirebaseFirestore.instance.collection('users').doc(user.uid);
       final doc = await docRef.get();
-
       if (doc.exists) {
         final data = doc.data();
         if (data != null) {
@@ -47,17 +45,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           });
         }
       } else {
-        // Crear documento si no existe
         final userEmail = user.email ?? '';
         final userName = user.displayName ?? 'Usuario';
-        
         await docRef.set({
           'email': userEmail,
           'name': userName,
           'phone': '',
           'createdAt': FieldValue.serverTimestamp(),
         });
-        
         setState(() {
           email = userEmail;
           nombre = userName;
@@ -66,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error al cargar datos: ${e.toString()}'),
+          content: Text('Error al cargar datos: $e'),
           backgroundColor: Colors.red,
         ),
       );
@@ -76,7 +71,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> seleccionarImagen(ImageSource source) async {
     final picked = await picker.pickImage(source: source);
     if (picked == null) return;
-
     setState(() {
       imagenSeleccionada = File(picked.path);
     });
@@ -86,7 +80,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null || imagenSeleccionada == null) return;
 
-    // Mostrar indicador de carga
     final loadingOverlay = OverlayEntry(
       builder: (context) => Container(
         color: Colors.black.withOpacity(0.5),
@@ -95,33 +88,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
-    
     Overlay.of(context).insert(loadingOverlay);
 
     try {
       final bytes = await imagenSeleccionada!.readAsBytes();
-
-      // Decodificar imagen
-      img.Image? image = img.decodeImage(bytes);
+      var image = img.decodeImage(bytes);
       if (image == null) throw Exception('No se pudo leer la imagen.');
 
-      // Redimensionar si es muy grande
       if (image.width > 500 || image.height > 500) {
         image = img.copyResize(image, width: 500);
       }
 
-      // Comprimir la imagen
       final compressedBytes = img.encodeJpg(image, quality: 65);
-
-      // Convertir a Base64
       final base64Image = base64Encode(compressedBytes);
 
-      // Validar tamaño
       if (base64Image.length > 700000) {
-        throw Exception('La imagen es demasiado grande. Selecciona otra más liviana.');
+        throw Exception('La imagen es demasiado grande.');
       }
 
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).update({
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({
         'imgProfile': base64Image,
         'lastUpdated': FieldValue.serverTimestamp(),
       });
@@ -140,12 +128,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}'),
+          content: Text('Error: $e'),
           backgroundColor: Colors.red,
         ),
       );
     } finally {
-      // Quitar indicador de carga
       loadingOverlay.remove();
     }
   }
@@ -153,7 +140,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     ImageProvider<Object>? imageWidget;
-
     if (imagenSeleccionada != null) {
       imageWidget = FileImage(imagenSeleccionada!);
     } else if (imagenBase64 != null && imagenBase64!.isNotEmpty) {
@@ -168,12 +154,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF6F6F6),
       appBar: AppBar(
-        title: const Text('Mi Perfil', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('Mi Perfil'),
         backgroundColor: const Color(0xFF191919),
         foregroundColor: Colors.white,
         centerTitle: true,
         elevation: 2,
       ),
+      drawer: const AppDrawer(currentRoute: '/profile'), // 👈 Drawer con ruta actual
       body: RefreshIndicator(
         onRefresh: obtenerDatosPerfil,
         color: const Color(0xFFFF0000),
@@ -182,7 +169,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
             children: [
-              // Imagen del perfil con animación de carga
               Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -206,7 +192,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              
               if (nombre != null && nombre!.isNotEmpty)
                 Text(
                   nombre!,
@@ -217,8 +202,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               const SizedBox(height: 30),
-
-              // Datos del usuario con diseño mejorado
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                 decoration: BoxDecoration(
@@ -253,7 +236,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 30),
               Text(
                 "Editar foto de perfil",
