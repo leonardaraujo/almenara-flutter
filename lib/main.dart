@@ -9,6 +9,7 @@ import 'screens/product_detail_screen.dart';
 import 'package:provider/provider.dart';
 import 'providers/cart_provider.dart';
 import 'screens/splash_screen.dart'; // 👈 Añadido
+import 'screens/profile_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         '/':
             (_) =>
                 const SplashScreen(), // 👈 Splash screen como entrada inicial
+        '/profile': (context) => const ProfileScreen(),
         '/login': (_) => const LoginScreen(),
         '/register': (_) => const RegisterScreen(),
         '/products': (_) => const ProductsScreen(),
